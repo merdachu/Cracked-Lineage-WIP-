@@ -52,7 +52,7 @@ local Window = Rayfield:CreateWindow({
 
 if MiscTab and MiscTab.CreateButton then
     local Button = MiscTab:CreateButton({
-        Name = "Heal",
+        Name = "Teleport to Position",
         Callback = function()
             -- Get the LocalPlayer object
             local player = game.Players.LocalPlayer
@@ -69,6 +69,9 @@ if MiscTab and MiscTab.CreateButton then
                 if rootPart then
                     -- Set the target position
                     local targetPosition = Vector3.new(-244.9686737060547, 42.89403533935547, -3225.257080078125)
+                    
+                    -- Save the original position
+                    local originalPosition = rootPart.Position
 
                     -- Create a TweenInfo object
                     local tweenInfo = TweenInfo.new(
@@ -79,8 +82,17 @@ if MiscTab and MiscTab.CreateButton then
                     -- Create a Tween using the TweenService to teleport to the target position
                     local teleportTween = game:GetService("TweenService"):Create(rootPart, tweenInfo, {CFrame = CFrame.new(targetPosition)})
 
+                    -- Create a delay before tweening back to the original position
+                    wait(3)
+
+                    -- Create a Tween to return to the original position
+                    local returnTween = game:GetService("TweenService"):Create(rootPart, tweenInfo, {CFrame = CFrame.new(originalPosition)})
+
                     -- Play the teleport Tween
                     teleportTween:Play()
+
+                    -- Play the return Tween after the delay
+                    returnTween:Play()
                 end
             end
         end
