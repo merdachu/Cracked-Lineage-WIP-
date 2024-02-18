@@ -50,58 +50,41 @@ local Window = Rayfield:CreateWindow({
  },
  })
 
-local Button = MiscTab:CreateButton({
-    Name = "Heal (Paid if not on normal difficulty.)",
-    Callback = function()
-        -- Get the LocalPlayer object
-        local player = game.Players.LocalPlayer
+if MiscTab and MiscTab.CreateButton then
+    local Button = MiscTab:CreateButton({
+        Name = "Teleport to Position",
+        Callback = function()
+            -- Get the LocalPlayer object
+            local player = game.Players.LocalPlayer
 
-        -- Get the character
-        local character = player.Character
+            -- Get the character
+            local character = player.Character
 
-        -- Check if the character exists
-        if character then
-            -- Get the character's humanoid root part
-            local rootPart = character:FindFirstChild("HumanoidRootPart")
+            -- Check if the character exists
+            if character then
+                -- Get the character's humanoid root part
+                local rootPart = character:FindFirstChild("HumanoidRootPart")
 
-            -- Check if the humanoid root part exists
-            if rootPart then
-                -- Save the original position
-                local originalPosition = rootPart.Position
+                -- Check if the humanoid root part exists
+                if rootPart then
+                    -- Set the target position
+                    local targetPosition = Vector3.new(-244.9686737060547, 42.89403533935547, -3225.257080078125)
 
-                -- Set the target position
-                local targetPosition = Vector3.new(-244.9686737060547, 42.89403533935547, -3225.257080078125)
+                    -- Create a TweenInfo object
+                    local tweenInfo = TweenInfo.new(
+                        1, -- Duration
+                        Enum.EasingStyle.Linear -- Easing style
+                    )
 
-                -- Create a TweenInfo object
-                local tweenInfo = TweenInfo.new(
-                    1, -- Duration
-                    Enum.EasingStyle.Linear -- Easing style
-                )
+                    -- Create a Tween using the TweenService to teleport to the target position
+                    local teleportTween = game:GetService("TweenService"):Create(rootPart, tweenInfo, {CFrame = CFrame.new(targetPosition)})
 
-                -- Create a Tween using the TweenService to teleport to the target position
-                local teleportTween = game:GetService("TweenService"):Create(rootPart, tweenInfo, {CFrame = CFrame.new(targetPosition)})
-
-                -- Create a Tween to return to the original position
-                local returnTween = game:GetService("TweenService"):Create(rootPart, tweenInfo, {CFrame = CFrame.new(originalPosition)})
-
-                -- Function to handle the key press event
-                local function onKeyPress(input)
-                    if input.KeyCode == Enum.KeyCode.E then
-                        if teleportTween.IsPlaying then
-                            -- Stop the teleport tween if it's already playing
-                            teleportTween:Cancel()
-                            returnTween:Play() -- Play the return tween
-                        else
-                            -- Play the teleport tween if it's not already playing
-                            teleportTween:Play()
-                            returnTween:Cancel() -- Cancel the return tween if it's already scheduled
-                        end
-                    end
+                    -- Play the teleport Tween
+                    teleportTween:Play()
                 end
-
-                -- Connect the key press event to the function
-                game:GetService("UserInputService").InputBegan:Connect(onKeyPress)
             end
         end
-    end
-})
+    })
+else
+    warn("Failed to find the CreateButton method. Make sure the necessary library or module is loaded.")
+end
