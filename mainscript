@@ -52,7 +52,7 @@ local Window = Rayfield:CreateWindow({
 
 if MiscTab and MiscTab.CreateButton then
     local Button = MiscTab:CreateButton({
-        Name = "Teleport to Position",
+        Name = "Heal",
         Callback = function()
             -- Get the LocalPlayer object
             local player = game.Players.LocalPlayer
